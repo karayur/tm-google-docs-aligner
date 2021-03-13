@@ -112,9 +112,9 @@ function getAlegnedScrollPosition() {
     scrollAdjustIdx = (currentDocAlignmentPointers[i] - currentDocAlignmentPointers[i-1]) / (otherDocAlignmentPointers[i] - otherDocAlignmentPointers[i-1])
     newScrollPosition = currentDocAlignmentPointers[i-1] + scrollAdjustIdx* (otherDocScrollPosition - otherDocAlignmentPointers[i-1])
 
-    console.log ("i = " + i);
-    console.log ("otherDocScrollPosition = " + otherDocScrollPosition);
-    console.log ("newScrollPosition = " + newScrollPosition);
+    //console.log ("i = " + i);
+    //console.log ("otherDocScrollPosition = " + otherDocScrollPosition);
+    //console.log ("newScrollPosition = " + newScrollPosition);
     return newScrollPosition;
 }
 
