@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Google Docs pair scrolling aligner
+// @name         Align scrolling
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  Align scrolling for two google docs. You get a small button on the left bottom of your screen.
+// @description  Align scrolling for two specific google docs. You get a small button on the left bottom of your screen.
 // @include      https://docs.google.com/document/d/1selOlaEB9_RcmPrSjCnlTNF7BfT15rtN*
 // @include      https://docs.google.com/document/d/1vP_H8kiNQ5Im19ai7viyVUPf0wOyDUVbHZf2DaoLN20*
 // @include      https://docs.google.com/document/d/1KcrbowMVfIxNgwdb_mDumHRNWSxcBYSP3Oa-PbCG-QA*
@@ -38,12 +38,22 @@ var currentDocScrollHeightVar;
 var otherDocScrollPositionVar;
 var otherDocScrollHeightVar;
 
+// Alignment pointers was gotten from chapters + additional pointer for chapter "Alpha teams"
+var alignmentPointersDoc1 = [0, 9167, 54923, 73346, 112682, 160326, 189889, 221782, 250456, 261415, 303541, 324096, 337997, 358552];
+var alignmentPointersDoc2 = [0, 9758, 62565, 82897, 127251, 180860, 213819, 249113, 281081, 293287, 339867, 363258, 379156, 401483];
+//var alignmentPointersDoc1 = [0, 2100-300, 4474-300, 5591-300, 10505]; // for test docs EN
+//var alignmentPointersDoc2 = [0, 2656-300, 4735-300, 5416-300, 11785]; // for test docs RUS
+var currentDocAlignmentPointers;
+var otherDocAlignmentPointers;
+
 
 if (currentDocID === "Doc1") {
     currentDocScrollPositionVar = "scrollPositionDoc1";
     otherDocScrollPositionVar = "scrollPositionDoc2";
     currentDocScrollHeightVar = "scrollHeightDoc1";
     otherDocScrollHeightVar = "scrollHeightDoc2";
+    currentDocAlignmentPointers = alignmentPointersDoc1;
+    otherDocAlignmentPointers = alignmentPointersDoc2;
    }
     else
     {
@@ -51,6 +61,8 @@ if (currentDocID === "Doc1") {
         otherDocScrollPositionVar = "scrollPositionDoc1";
         currentDocScrollHeightVar = "scrollHeightDoc2";
         otherDocScrollHeightVar = "scrollHeightDoc1";
+        currentDocAlignmentPointers = alignmentPointersDoc2;
+        otherDocAlignmentPointers = alignmentPointersDoc1;
     }
 
 var scrollPosition;
@@ -75,12 +87,38 @@ var otherDocScrollHeight
 var scrollAdjustIdx;
 
 $("#gmVerticalAlignBtn").click ( function () {
-    otherDocScrollPosition = GM_getValue(otherDocScrollPositionVar);
-    otherDocScrollHeight = GM_getValue(otherDocScrollHeightVar, scrollHeight);
+    //otherDocScrollPosition = GM_getValue(otherDocScrollPositionVar);
+    //otherDocScrollHeight = GM_getValue(otherDocScrollHeightVar, scrollHeight);
     scrollAdjustIdx = scrollHeight / otherDocScrollHeight;
-    $(".kix-appview-editor").scrollTo({left:0, top:otherDocScrollPosition * scrollAdjustIdx});
+    //$(".kix-appview-editor").scrollTo({left:0, top:otherDocScrollPosition * scrollAdjustIdx}); // for simple adjustment over all document
+    $(".kix-appview-editor").scrollTo({left:0, top:getAlegnedScrollPosition()});
 
 });
+
+
+
+function getAlegnedScrollPosition() {
+    otherDocScrollPosition = GM_getValue(otherDocScrollPositionVar);
+    otherDocScrollHeight = GM_getValue(otherDocScrollHeightVar, scrollHeight);
+
+
+    var i;
+    for (i = 0; i < otherDocAlignmentPointers.length; i++) {
+        //baseOtherDocScrollPosition = otherDocAlignmentPointers[i];
+        if (otherDocScrollPosition < otherDocAlignmentPointers[i]) break;
+    }
+
+    var newScrollPosition = 0;
+    scrollAdjustIdx = (currentDocAlignmentPointers[i] - currentDocAlignmentPointers[i-1]) / (otherDocAlignmentPointers[i] - otherDocAlignmentPointers[i-1])
+    newScrollPosition = currentDocAlignmentPointers[i-1] + scrollAdjustIdx* (otherDocScrollPosition - otherDocAlignmentPointers[i-1])
+
+    console.log ("i = " + i);
+    console.log ("otherDocScrollPosition = " + otherDocScrollPosition);
+    console.log ("newScrollPosition = " + newScrollPosition);
+    return newScrollPosition;
+}
+
+
 
 
 
