@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Align scrolling
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Align scrolling for two specific google docs. You get a small button on the left bottom of your screen.
 // @include      https://docs.google.com/document/d/1selOlaEB9_RcmPrSjCnlTNF7BfT15rtN*
 // @include      https://docs.google.com/document/d/1vP_H8kiNQ5Im19ai7viyVUPf0wOyDUVbHZf2DaoLN20*
